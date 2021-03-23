@@ -1,27 +1,94 @@
+import React, { Component, Fragment } from "react";
 import "./App.css";
-import React, { Fragment } from "react";
-import Profile from "./Profile/Profile";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Med from "./Med.jpg";
+import img from "./Med.jpg";
 
-function handleName(fullName) {
-    alert(`My name is: ${fullName}.`);
-}
-function App() {
-    return (
-        <Fragment>
-            <Profile
-                /*fullName='Med hedi Attia'*/ bio="Biography"
-                profession="Electromechanical engineering and Software developer"
-                handleName={handleName}
-            >
-                {" "}
-                {/* fullName removed to check for default props */}
-                <img src={Med} alt="Image" className="imgCont" />{" "}
-                {/* Default prop children */}
-            </Profile>
-        </Fragment>
-    );
+class Timer extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dt: new Date(),
+        };
+    }
+    componentDidMount() {
+        this.interval = setInterval(() => {
+            this.setState({ dt: new Date() });
+        }, 1000);
+    }
+    componentWillUnmount() {
+        clearInterval(this.interval);
+    }
+
+    render() {
+        const Tim = () => {
+            return <h3>{this.state.dt.toLocaleTimeString("en-US")}</h3>;
+        };
+        return <Tim />;
+    }
 }
 
-export default App;
+export default class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dt: new Date(),
+            show: false,
+            x: "Show",
+            Person: {
+                fullName: "Med Hedi Attia",
+                bio: "Biography",
+                imgSrc: img,
+                prefession:
+                    "Electromechanical engineering and Software Developer",
+            },
+        };
+    }
+
+    aff = () => {
+        if (this.state.show === false) {
+            this.setState({ show: true });
+            this.setState({ x: "Hide" });
+        } else if (this.state.show === true) {
+            this.setState({ show: false });
+            this.setState({ x: "Show" });
+        }
+    };
+
+    render() {
+        const Profile = () => {
+            return (
+                <div className="display">
+                    <h1>{fullName}</h1>
+                    <h3>{bio}</h3>
+                    <h3>{prefession}</h3>
+                    <img src={imgSrc} alt="mypic" style={{ width: "10%" }} />
+                </div>
+            );
+        };
+
+        const { fullName, bio, imgSrc, prefession } = this.state.Person;
+        return (
+            <Fragment>
+                <div className="style">
+                    {this.state.show ? <Profile /> : null}
+                    {this.state.show ? (
+                        <Timer />
+                    ) : (
+                        <h3>
+                            Started at :{" "}
+                            {this.state.dt.toLocaleTimeString("en-US")}
+                        </h3>
+                    )}
+                    <div>
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={this.aff}
+                        >
+                            {this.state.x}
+                        </button>
+                    </div>
+                </div>
+            </Fragment>
+        );
+    }
+}
